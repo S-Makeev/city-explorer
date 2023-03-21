@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Card from 'react-bootstrap/Card';
 
 
 class App extends React.Component {
@@ -53,20 +54,29 @@ class App extends React.Component {
       <>
         <h1>API CALLS</h1>
 
-        <form onSubmit={this.getCityData}>
-          <label > Enter in a City:
-            <input type="text" onChange={this.handleCityInput} />
-          </label>
-          <button type="submit">Explore!</button>
-        </form>
-      
 
-        {/* TERNARY - WTF  */}
-        {
-          this.state.error
-            ? <p>{this.state.errorMessage}</p>
-            : <p>{this.state.cityData.display_name}</p>
-        }
+
+        <Card style={{ width: '18rem' }}>
+          <Card.Img variant="top" src="holder.js/100px180" />
+          <Card.Body>
+
+            <Card.Title>{
+              this.state.error
+                ? <p>{this.state.errorMessage}</p>
+                : <p>{this.state.cityData.display_name}</p>
+            }
+            </Card.Title>
+            <Card.Text>
+              <form onSubmit={this.getCityData}>
+                <label > Enter in a City:
+                  <input type="text" onChange={this.handleCityInput} />
+                </label>
+
+                <button type="submit">Explore!</button>
+              </form>
+            </Card.Text>
+          </Card.Body>
+        </Card>
       </>
     )
   }
