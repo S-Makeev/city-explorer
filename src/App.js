@@ -59,7 +59,7 @@ class App extends React.Component {
           </label>
           <button type="submit">Explore!</button>
         </form>
-        <p>{this.state.cityData.display_name}</p>
+      
 
         {/* TERNARY - WTF  */}
         {
