@@ -49,23 +49,22 @@ class App extends React.Component {
   render() {
     return (
       <>
-        <h1>API CALLS</h1>
+        <h1>CITY EXPLORER</h1>
 
+        <Card border ="info" bg ="info" style={{ width: '25rem' }}>
 
-
-        <Card style={{ width: '18rem' }}>
           <Card.Img variant="top" src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=14`} />
           <Card.Body>
 
             <Card.Title>{
-              this.state.errorg
+              this.state.error
                 ? <p>{this.state.errorMessage}</p>
                 : <p>{this.state.cityData.display_name}</p>
             }
             </Card.Title>
             <Card.Text>
               <form onSubmit={this.getCityData}>
-                <label > Enter in a City:
+                <label > Enter in a City: 
                   <input type="text" onChange={this.handleCityInput} />
                 </label>
 
@@ -77,6 +76,7 @@ class App extends React.Component {
             <p>Lon: {this.state.cityData.lon}</p>
           </Card.Body>
         </Card>
+
       </>
     )
   }
