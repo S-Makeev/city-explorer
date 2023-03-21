@@ -46,9 +46,6 @@ class App extends React.Component {
 
   }
 
-  // *** MAP PORTION OF YOUR LAB IMG SRC POINTS TO THIS URL: 
-  // *** https://maps.locationiq.com/v3/staticmap?key=<YOUR API KEY>&center=<CITY'S LAT>,<CITY'S LON>&zoom=13
-
   render() {
     return (
       <>
@@ -57,11 +54,11 @@ class App extends React.Component {
 
 
         <Card style={{ width: '18rem' }}>
-          <Card.Img variant="top" src="holder.js/100px180" />
+          <Card.Img variant="top" src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=14`} />
           <Card.Body>
 
             <Card.Title>{
-              this.state.error
+              this.state.errorg
                 ? <p>{this.state.errorMessage}</p>
                 : <p>{this.state.cityData.display_name}</p>
             }
@@ -75,6 +72,9 @@ class App extends React.Component {
                 <button type="submit">Explore!</button>
               </form>
             </Card.Text>
+
+            <p>Lat: {this.state.cityData.lat}</p>
+            <p>Lon: {this.state.cityData.lon}</p>
           </Card.Body>
         </Card>
       </>
