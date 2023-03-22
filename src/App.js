@@ -55,7 +55,7 @@ class App extends React.Component {
   }
   
 
-  handleGetWeather = async (lat, lon) => {
+  handleGetWeather = async (lat, lon, city) => {
     try {
       console.log('handlegetWeather was called');
       // TODO: Call my server and pass in the lat, lon, and city name
