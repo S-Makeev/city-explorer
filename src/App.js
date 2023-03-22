@@ -1,10 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import SearchForm from './components/SearchForm';
-import Container from 'react-bootstrap/Container';
-import Carousel from 'react-bootstrap/Carousel';
-import CityData from './components/CityData';
-import ErrorAlert from './components/ErrorAlert';
+import Weather from './Weather';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,37 +8,35 @@ class App extends React.Component {
     this.state = {
       city: '',
       cityData: {},
-      mapSrc: '',
       error: false,
       errorMessage: '',
-      photoData: [],
-      showImages: false,
-      photoError: false,
-      photoErrorMessage: ''
+      weatherData: []
     }
   }
 
-  handleCityInput = (event) => {
-    this.setState({
-      city: event.target.value
-    })
-  }
+  
 
   getCityData = async (event) => {
     event.preventDefault();
-
+    
     try {
-
       let url = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`
 
       let cityDataFromAxios = await axios.get(url);
 
+
       this.setState({
         cityData: cityDataFromAxios.data[0],
-        mapSrc: `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${cityDataFromAxios.data[0].lat},${cityDataFromAxios.data[0].lon}&zoom=15&markers=icon:small-red-cutout|${cityDataFromAxios.data[0].lat},${cityDataFromAxios.data[0].lon}`,
         error: false
       });
-      this.getPhotos();
+
+      // TODO: CALL WEATHER HANDLER
+      let lat = cityDataFromAxios.data[0].lat;
+      let lon = cityDataFromAxios.data[0].lon;
+
+       this.handleGetWeather(lat, lon);
+
+
     } catch (error) {
 
       this.setState({
@@ -50,68 +44,64 @@ class App extends React.Component {
         errorMessage: error.message
       })
     }
+
   }
+  
+  handleCityInput = (event) => {
+    this.setState({
+      city: event.target.value
+    })
+    console.log('city:', this.state.city)
+  }
+  
 
-  getPhotos = async () => {
-
+  handleGetWeather = async (lat, lon) => {
     try {
-      let response = await axios.get(`${process.env.REACT_APP_SERVER}/weather?searchQuery=${this.state.city}`)
-      this.setState({
-        photoData: response.data,
-        showImages: true,
-        photoError: false,
-        photoErrorMessage: ''
-      })
-    } catch (error) {
-      this.setState({
-        photoError: false,
-        showImages: false,
-        photoErrorMessage: `A Photo Error Occurred: ${error.response.status}, ${error.response.data}`
+      console.log('handlegetWeather was called');
+      // TODO: Call my server and pass in the lat, lon, and city name
+      //let url = "http://localhost:3003/weather?city=Seattle"
+     let url = `${process.env.REACT_APP_SERVER}/weather?city=${this.state.city}&lat=${lat}&lon=${lon}`;
 
+      let weatherDataFromAxios = await axios.get(url);
+
+      console.log('Weather: ', weatherDataFromAxios.data)
+
+      this.setState({
+        weatherData: weatherDataFromAxios.data
       })
+
+      // TODO: Create a seperate Component pass that down as props
+
+    } catch (error) {
+      console.log(error.message)
     }
   }
+
+
   render() {
     return (
       <>
-        <Container>
-          <h1>API CALLS</h1>
+        <h1>API CALLS</h1>
 
-          <SearchForm
-            getCityInfo={this.getCityData}
-            handleCityInput={this.handleCityInput}
-          />
+        <form onSubmit={this.getCityData}>
+          <label > Enter in a City:
+            <input type="text" onChange={this.handleCityInput} />
+          </label>
+          <button type="submit">Explore!</button>
+        </form>
 
-          {
-            this.state.error
-              ? <ErrorAlert errorMessage={this.state.errorMessage} />
-              : Object.keys(this.state.cityData).length > 0 && <CityData
-                cityData={this.state.cityData}
-                mapSrc={this.state.mapSrc}
-              />
-          }
-        </Container>
-
+        {/* TERNARY - WTF  */}
         {
-          this.state.showImages &&
-          <>
-            <Container>
-              <Carousel>
-                {this.state.photoData.map((pic, idx) => (
-                  <Carousel.Item key={idx}>
-                    <img
-                      className="d-block w-100"
-                      src={pic.src}
-                      alt={pic.alt}
-                    />
-                    <Carousel.Caption>
-                      <h3 style={{ backgroundColor: 'teal', borderRadius: '5px', width: 'max-content', margin: 'auto', padding: '5px' }}>Photo by: {pic.username}</h3>
-                    </Carousel.Caption>
-                  </Carousel.Item>
-                ))}
-              </Carousel>
-            </Container>
-          </>
+          this.state.error
+            ? <p>{this.state.errorMessage}</p>
+            : Object.keys(this.state.cityData).length > 0 &&
+            <>
+              <p>{this.state.cityData.display_name}</p>
+              <p>Lat: {this.state.cityData.lat}</p>
+              <p>Lon: {this.state.cityData.lon}</p>
+
+              <Weather weatherData={this.state.weatherData} />
+            </>
         }
       </>
     )
@@ -119,3 +109,10 @@ class App extends React.Component {
 }
 
 export default App;
+
+
+
+
+
+
+
