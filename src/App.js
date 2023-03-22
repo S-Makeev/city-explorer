@@ -1,8 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from 'react-bootstrap/Card';
-
+import SearchForm from './components/SearchForm';
+import Container from 'react-bootstrap/Container';
+import Carousel from 'react-bootstrap/Carousel';
+import CityData from './components/CityData';
+import ErrorAlert from './components/ErrorAlert';
 
 class App extends React.Component {
   constructor(props) {
@@ -10,8 +12,13 @@ class App extends React.Component {
     this.state = {
       city: '',
       cityData: {},
+      mapSrc: '',
       error: false,
-      errorMessage: ''
+      errorMessage: '',
+      photoData: [],
+      showImages: false,
+      photoError: false,
+      photoErrorMessage: ''
     }
   }
 
@@ -25,17 +32,17 @@ class App extends React.Component {
     event.preventDefault();
 
     try {
+
       let url = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`
 
       let cityDataFromAxios = await axios.get(url);
 
-      console.log(cityDataFromAxios.data[0])
-
       this.setState({
         cityData: cityDataFromAxios.data[0],
+        mapSrc: `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${cityDataFromAxios.data[0].lat},${cityDataFromAxios.data[0].lon}&zoom=15&markers=icon:small-red-cutout|${cityDataFromAxios.data[0].lat},${cityDataFromAxios.data[0].lon}`,
         error: false
       });
-
+      this.getPhotos();
     } catch (error) {
 
       this.setState({
@@ -43,40 +50,69 @@ class App extends React.Component {
         errorMessage: error.message
       })
     }
-
   }
 
+  getPhotos = async () => {
+
+    try {
+      let response = await axios.get(`${process.env.REACT_APP_SERVER}/weather?searchQuery=${this.state.city}`)
+      this.setState({
+        photoData: response.data,
+        showImages: true,
+        photoError: false,
+        photoErrorMessage: ''
+      })
+    } catch (error) {
+      this.setState({
+        photoError: false,
+        showImages: false,
+        photoErrorMessage: `A Photo Error Occurred: ${error.response.status}, ${error.response.data}`
+
+      })
+    }
+  }
   render() {
     return (
       <>
-        <h1>CITY EXPLORER</h1>
+        <Container>
+          <h1>API CALLS</h1>
 
-        <Card border ="info" bg ="info" style={{ width: '25rem' }}>
+          <SearchForm
+            getCityInfo={this.getCityData}
+            handleCityInput={this.handleCityInput}
+          />
 
-          <Card.Img variant="top" src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=14`} />
-          <Card.Body>
+          {
+            this.state.error
+              ? <ErrorAlert errorMessage={this.state.errorMessage} />
+              : Object.keys(this.state.cityData).length > 0 && <CityData
+                cityData={this.state.cityData}
+                mapSrc={this.state.mapSrc}
+              />
+          }
+        </Container>
 
-            <Card.Title>{
-              this.state.error
-                ? <p>{this.state.errorMessage}</p>
-                : <p>{this.state.cityData.display_name}</p>
-            }
-            </Card.Title>
-            <Card.Text>
-              <form onSubmit={this.getCityData}>
-                <label > Enter in a City: 
-                  <input type="text" onChange={this.handleCityInput} />
-                </label>
-
-                <button type="submit">Explore!</button>
-              </form>
-            </Card.Text>
-
-            <p>Lat: {this.state.cityData.lat}</p>
-            <p>Lon: {this.state.cityData.lon}</p>
-          </Card.Body>
-        </Card>
-
+        {
+          this.state.showImages &&
+          <>
+            <Container>
+              <Carousel>
+                {this.state.photoData.map((pic, idx) => (
+                  <Carousel.Item key={idx}>
+                    <img
+                      className="d-block w-100"
+                      src={pic.src}
+                      alt={pic.alt}
+                    />
+                    <Carousel.Caption>
+                      <h3 style={{ backgroundColor: 'teal', borderRadius: '5px', width: 'max-content', margin: 'auto', padding: '5px' }}>Photo by: {pic.username}</h3>
+                    </Carousel.Caption>
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            </Container>
+          </>
+        }
       </>
     )
   }
