@@ -60,7 +60,7 @@ class App extends React.Component {
       console.log('handlegetWeather was called');
       // TODO: Call my server and pass in the lat, lon, and city name
       //let url = "http://localhost:3003/weather?city=Seattle"
-     let url = `${process.env.REACT_APP_SERVER}/weather?city=${this.state.city}&lat=${lat}&lon=${lon}`;
+     let url = `${process.env.REACT_APP_SERVER}/weather?city=${city}&lat=${lat}&lon=${lon}`;
 
       let weatherDataFromAxios = await axios.get(url);
 
