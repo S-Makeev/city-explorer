@@ -4,6 +4,7 @@ import Weather from './Weather';
 import MovieData from './Movies.js';
 
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -74,8 +75,8 @@ class App extends React.Component {
       let weatherDataFromAxios = await axios.get(url);
 
       let weatherArr = weatherDataFromAxios.data.map((forecast, key) => {
-        return forecast
-      })
+        return forecast;
+      });
 
       this.setState({
         weatherData: weatherArr,
