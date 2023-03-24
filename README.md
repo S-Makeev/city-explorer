@@ -1,5 +1,9 @@
 # City Explorer
 
+
+![60c14015966d3a9b292b1feeee2a56e1](https://user-images.githubusercontent.com/71305940/227408636-1dbdff39-2868-4eef-ba5f-5ec250adf3d1.png)
+
+
 **Slava Makeev**: Your Name Goes Here
 **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)
 
