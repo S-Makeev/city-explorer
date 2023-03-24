@@ -2,6 +2,12 @@
 
 
 
+
+Comp. elements
+![952f1876601fe855fbc6859dfc729ddd](https://user-images.githubusercontent.com/71305940/227629970-579f77a1-93c4-4842-bb9c-4488b62c020e.png)
+
+
+
 ![60c14015966d3a9b292b1feeee2a56e1](https://user-images.githubusercontent.com/71305940/227408636-1dbdff39-2868-4eef-ba5f-5ec250adf3d1.png)
 
 
