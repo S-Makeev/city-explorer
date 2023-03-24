@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
 import Movie from './Movie'
 /****Comments */
 class MovieData extends React.Component {
