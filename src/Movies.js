@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Col, Row } from 'react-bootstrap';
 
 class MovieData extends React.Component {
   render() {
@@ -8,8 +8,18 @@ class MovieData extends React.Component {
       <>
         <section>{this.props.movieData.map(movieInfo => 
         <>
-        <h3>{movieInfo.title}</h3>
-        <p>{movieInfo.overview}</p>
+         <section>
+          <Row>
+            {this.props.movieData.map(movieInfo => 
+              <Col md={6}>
+                <div>
+                  <h3>{movieInfo.title}</h3>
+                  <p>{movieInfo.overview}</p>
+                </div>
+              </Col>
+            )}
+          </Row>
+        </section>
         </>
         )}
 
